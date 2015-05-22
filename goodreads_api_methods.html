@@ -1,1 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset = "utf-8">
+    <title> An Introduction to Using the Goodreads API: API Methods </title>
+    <link rel = "stylesheet" href = "goodreadsapistyle.css">
+	<style type="text/css">
+	   #sidebar {height: 900px;}
+	 </style>
+  </head>
+
+  <body>
+	<div id = "sidebar">
+	  <h2> Goodreads API Guide </h2>
+	  <h3> Getting Started </h3>
+	  <a href = guide_introduction.html> Introduction </a> <br>
+	  <a href = getting_a_key.html> Getting A Key </a> <br>
+	  <a href = goodreads_api_methods.html> Goodread's API Methods </a> <br>
+	  <h3> Examples </h3>
+	  <a href = find_books_by_title_author_or_isbn.html> Find Books by Title, Author, or ISBN </a> <br>
+	  <a href = paginate_an_authors_books.html> Paginate an Author's Books </a> <br>
+	  <a href = get_reviews_for_a_book_given_a_title.html> Get Reviews for a Book Given a Title </a> <br>
+	  <a href = get_a_users_review_for_a_given_book.html> Get a User's Review for a Given Book </a> <br>
+	  <br>
+	</div>
+	
+	<div id = "header"> 
+		<h1>An Introduction to Using the Goodreads API </h1>
+		<p><small> by Lauren Miller </small></p>
+		
+	</div>
+	
+	<div id = "content">
+	  <h1> Goodreads' API Methods <h1>
+	  <h2> The Good and the Bad </h2>
+	  <p> Goodreads is one of the most extensive user-populated database of books, but it's not perfect. <a href = https://www.goodreads.com/topic/show/453508-can-we-get-json-for-all-calls> Goodreads' moderator phrases it succinctly </a>: "If you want a fun api to use that has great support, excellent documentation, client wrappers written in lots of different languages, and a variety of output formats, goodreads' api is not the one to use. If you want an API that has the best available book reviews, book metadata, and social book features on the internet, well, then you have no choice, you must use our api."</p>
+	  <h2> A Few Quirks </h2>
+	  <p>You can find the basics to all of the Goodreads API methods <a href = https://www.goodreads.com/api/> on their API page </a>. This is an excellent resource, and it is mostly correct. If you're following documentation and something seems wrong, it might be that there's an error in what was coppied down or something has yet to be updated. <a href = https://www.goodreads.com/group/show/8095-goodreads-developers> The Goodreads Developers group </a> is a great place to look for answers. For the most part, however, the official documentation is correct. </p>
+	  <p>There are a few quirks to the set of methods listed, specifically the mixed use of JSON and XML, the mix of HTTP request methods in API methods, and the use OAuth.</p>
+	  <p> Goodreads API methods return JSON and XML, but not always both.Most methods return just XML, a few return either JSON or XML depending on your preference, and just one, which allows you to get review statistics for a given list of ISBNs, returns JSON only. Essentially, if you'd prefer to not use JSON, no problem. Unfortunately, there's no getting around dealing with XML if you want to use the Goodreads API. Users have been asking the Goodreads support for more JSON endpoints for the past few years, but it doesn't look like that will happen any time soon. Both return types will be shown in the following examples.</p>
+	  <p>Most of the methods use the GET request parameters, but some of those using OAuth use POST. Unfortunately, the Goodreads API is not completely standardized.</p>
+	  <h2> How to Use OAuth </h2>
+	  <p> While most Goodreads API methods do not use OAuth, it can be very useful, allowing users to login and access their own Goodreads data. From your webpage or app, users will be redirected to a page on Goodreads where they'll login and then be redirected back to your site or app via the callback URL. You'll be able to access their data using a token. There's some useful information <a href = https://www.goodreads.com/api/documentation> here </a> and you can see some an example of OAuth use with Python and Ruby at <a href = https://www.goodreads.com/api/oauth_example>. This brief introductory guide to Goodreads' API doesn't cover the use of Oath, but there already exist many examples of how to use it <a href = https://code.google.com/p/oauth-php/> here </a> and even a library specifically designed to work around it's use <a href = https://code.google.com/p/goodreads-oauth/downloads/list> here </a>. However, as for all things, you can find more information about OAuth elsewhere online, as it will not be covered in this guide.
+</p>
+	</div>
+  </body>
+
+</html>
 
