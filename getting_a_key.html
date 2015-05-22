@@ -3,10 +3,10 @@
 
   <head>
     <meta charset = "utf-8">
-    <title> An Introduction to Using the Goodreads API </title>
+    <title> An Introduction to Using the Goodreads API: Getting A Key </title>
     <link rel = "stylesheet" href = "goodreadsapistyle.css">
 	<style type="text/css">
-	   #sidebar {height: 610px;}
+	   #sidebar {height: 900px;}
 	 </style>
   </head>
 
@@ -33,10 +33,17 @@
 	
 	<div id = "content">
 	  <h1> Getting A Key <h1>
-	  <h2> How to Sign Up <h2>
-	  <p>
+	  <h2> How to Sign Up </h2>
+	  <p>Most Goodreads API methods require a developer key, and many require registering your device using OAuth as well. You can do very little without registering with Goodreads, beside listing comments for a subject. However, signing up for a key is relatively easy. </p>
+	  <p>You will need to sign into your Goodreads account before signing up for a Goodreads API developer key. If you don't have an account, it takes less than a minute, perhaps, and you can start to use your account right away. </p>
+	  <p>Once you're logged in, go to <a href = https://www.goodreads.com/api/keys> Goodread's API page </a>. You'll need to enter an "Appication Name" and a "Company Name". They're not strict with their requirements and there's no review, so don't worry overmuch about what your call the application name or company if you're just using this for practice. You can, optionally, enter a "Application URL", "Callback URL", and "Support URL". However, unless you intend to use the API methods that require OAuth, and about half of them do, you can skip these fields. After agreeing to the terms of service you can apply for a developer key. </p>
+	  <h2> What You Need from Goodreads </h2>
+	  <p> The developer key is assigned instantly, and you should see both your developer key and your secret key at the top of the page. Make sure to copy down your developer key or keep this tab open while you you work. You'll be using this key as a parameter for most of the API methods. Unless you plan on using methods requiring OAuth registration, you can ignore your secret key. If you do, be sure to copy this down as well. </p>
+	  <h2> How to Change Things Later </h2>
+	  <p> If you do register without providing the optional URLs and decide later that you do want to use the methods requiring OAuth, you can always add this extra information later. You can also reset your API key later as well. Your keys and the the form allowing you to update your information will remain at <a href = https://www.goodreads.com/api/keys> Goodread's API page </a>. </p>
+	  <h2> Why You Should Actually Read Their Terms </h2>
+	  <p> But wait! Be sure to read the "Developer Terms of Service", as Goodreads is relatively restrictive with the use of their API. Several terms of the agreement have been criticized as being unfairly restrictive, specifically section one, which requires that the user "Not request any method more than once a second". The terms also require that the Goodreads name or logo be used wherever the API is, and that there is a link provided to the source of the data, which some people may find cluttering. You may also not harvest data or store information gathered through the API for more than 24 hours. These requirements have been criticized for unnecessarily limiting what the types of apps can be used with this API, but there's no getting out of them if you want a developer key. You can always review the "Developer Terms of Service" <a href = https://www.goodreads.com/api/keys> here </a>, but because these terms are so restrictive, you should keep these specific limitations in mind when designing any site or app using the Goodreads API. </p>
 	</div>
-  
   </body>
 
 </html>
