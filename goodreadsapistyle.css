@@ -1,0 +1,33 @@
+#header {
+    background-color: #4D2824;
+    color: white;
+    text-align: center;
+    padding: 5px;
+	
+	position:absolute;
+	width: 100%;
+	
+}
+
+#sidebar {
+    background-color: LemonChiffon;
+    padding:10px; 
+	float:left;
+	margin-top: 140px;
+
+}
+#content {
+    width:700px;
+    float:left;
+    padding:10px; 
+	margin-left: 10px;
+	margin-top: 140px;
+	
+}
+
+a:link {
+    color: MidnightBlue;
+}
+a:visited {
+    color: #4D2824;;
+}
