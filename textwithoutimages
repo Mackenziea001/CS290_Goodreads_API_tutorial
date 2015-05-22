@@ -1,0 +1,449 @@
+An Introduction to Using the Goodreads API
+by Lauren Miller
+
+Introduction/How to Use This Guide
+
+The Goodreads API allows users to access almost all information about books, authors, users, reviews, lists, quotes, and so on that are accessible through the site. The Goodreads API allows access to this information through several dozen methods. These can be used to edit the a Goodreads user’s bookshelves, get information about other users, search for books and authors, and a variety of other useful activities. The official Goodreads iOS and Android apps exclusively use the API. It is also used to integrate with the Kindle (http://www.amazon.com/gp/help/customer/display.html?nodeId=201734030) and some libraries (http://www.mcpl.us/), (check the “Staff Reviews section). Goodreads has more than 30 million members and 900 million books registered, so use of it’s API provides access to an impressive chunk of data.
+
+The official Goodreads API documentation (https://www.goodreads.com/api/) is lists every method and is an excellent reference. It is mostly correct. Unfortunately, it is not especially accessible to beginners, largely due to it’s patchwork implementation of JSON in addition to XML, unclear parameter terms, use of OAuth, and lack of demonstration of the API methods. This brief guide is a complement to this useful but limited documentation provided by Goodreads and should act as an introduction to using the Goodreads API for beginners. 
+
+“Getting A Key” will show how to sign up for a Goodreads key, show how it’s used, and explain some of the requirements Goodreads has set in place for those requesting a key. “Before you begin” will provide a review of information required to use the Goodreads API. There are demonstrations of four methods: search.books, author.books, book.review_counts method, and review.show_by_user_and_book, which allow users to search Goodreads for books, list an author’s books, show review statistics for a given book, and get a specific user’s review for a specific book, respectively.
+
+Simply due to the quantity of Goodreads API methods available, this brief guide won’t be covering all of them. The four methods covered provide examples, but do not cover all aspects of Goodreads or it’s API. Specifically, this brief introductory guide will not cover methods using OAuth. However, most API methods do not require OAuth, so unless you would like submit information to Goodreads, this introduction should be sufficient. 
+
+
+Getting A Key
+
+Most Goodreads API methods require a developer key, and many require registering your device using OAuth as well. You can do very little without registering with Goodreads, beside listing comments for a subject. However, signing up for a key is relatively easy.
+
+You will need to sign into your Goodreads account before signing up for a Goodreads API developer key. If you don’t have an account, it takes less than a minute, perhaps, and you can start to use your account right away.
+
+Once you’re logged in, go to https://www.goodreads.com/api/keys. You’ll need to enter an “Appication Name” and a “Company Name”. They’re not strict with their requirements and there’s no review, so don’t worry overmuch about what your call the application name or company if you’re just using this for practice. You can, optionally, enter a “Application URL”, “Callback URL”, and “Support URL”. However, unless you intend to use the API methods that require OAuth, and about half of them do, you can skip these fields. After agreeing to the terms of service you can apply for a developer key. 
+
+The developer key is assigned instantly, and you should see both your developer key and your secret key at the top of the page. Make sure to copy down your developer key or keep this tab open while you you work. You’ll be using this key as a parameter for most of the API methods. Unless you plan on using methods requiring OAuth registration, you can ignore your secret key. If you do, be sure to copy this down as well.
+
+If you do register without providing the optional URLs and decide later that you do want to use the methods requiring OAuth, you can always add this extra information later. Your keys and the the form allowing you to update your information will remain at https://www.goodreads.com/api/keys. 
+
+But wait! Be sure to read the “Developer Terms of Service”, as Goodreads is relatively restrictive with the use of their API. Several terms of the agreement have been criticized as being unfairly restrictive, specifically section one, which requires that the user “Not request any method more than once a second”. The terms also require that the Goodreads name or logo be used wherever the API is, and that there is a link provided to the source of the data, which some people may find cluttering. You may also not harvest data or store information gathered through the API for more than 24 hours. These requirements have been criticized for unnecessarily limiting what the types of apps can be used with this API. You can always review the “Developer Terms of Service” at https://www.goodreads.com/api/keys, but because these terms are so restrictive, you should keep these specific limitations in mind when designing any site or app using the Goodreads API.
+
+
+
+
+
+
+Before You Begin
+
+Goodreads is one of the most extensive user-populated database of books, but it’s not perfect. Goodreads’ moderator phrases it succinctly at https://www.goodreads.com/topic/show/453508-can-we-get-json-for-all-calls: 
+
+If you want a fun api to use that has great support, excellent documentation, client wrappers written in lots of different languages, and a variety of output formats, goodreads' api is not the one to use.
+
+If you want an API that has the best available book reviews, book metadata, and social book features on the internet, well, then you have no choice, you must use our api.
+
+You can find the basics to all of the Goodreads API methods at https://www.goodreads.com/api/. This is an excellent method, and it is mostly correct. There are a few quirks to the set of methods listed, specifically the mixed use of JSON and XML, the mix of HTTP request methods in API methods, and the use OAuth. 
+
+Goodreads API methods return JSON and XML, but not always both.Most methods return just XML, a few return either JSON or XML depending on your preference, and just one, which allows you to get review statistics for a given list of ISBNs, returns JSON only. Essentially, if you’d prefer to not use JSON, no problem. Unfortunately, there’s no getting around dealing with XML if you want to use the Goodreads API. Users have been asking the Goodreads support for more JSON endpoints for the past few years, but it doesn’t look like that will happen any time soon. Both return types will be shown in the following examples.
+
+Most of the methods use the GET request parameters, but some of those using OAuth use POST. Unfortunately, the Goodreads API is not completely standardized. 
+
+While most Goodreads API methods do not use OAuth, it can be very useful, allowing users to login and access their own Goodreads data. From your webpage or app, users will be redirected to a page on Goodreads where they'll login and then be redirected back to your site or app via the callback URL. You'll be able to access their data using a token. There’s some useful information at https://www.goodreads.com/api/documentation and you can see some an example of OAuth use with Python and Ruby at https://www.goodreads.com/api/oauth_example. This brief introductory guide to Goodread’s API doesn’t cover the use of Oath, but there already exist many examples of how to use it at https://code.google.com/p/oauth-php/ and even a library specifically designed to work around it’s use here at https://code.google.com/p/goodreads-oauth/downloads/list.
+However, as for all things, you can find more information about OAuth elsewhere online.
+
+There are several ways to connect to the Goodreads API, but this will not be the focus of this beginners guide. The examples will demonstrate how do so for clarity, but your milage will vary, as they only provide enough to see the XML or JSON returned.
+
+While the following examples are by no means comprehensive of everything you can do with the Goodreads API, the sample of Goodreads API methods demonstrated should clarify the use of most others.
+
+Find Books by Title, Author, or ISBN 
+
+What Does the search.books Method Do?
+
+Goodreads allows you to rather broadly search for books by title, author, or ISBN and returns XML of the of information about books matching the query sorted by popularity. You can see the offficial documentation here at https://www.goodreads.com/api/index#search.books. 
+
+What is Returned?
+
+The XML returned will include useful albeit limited information about the search, including how many books satisfy the query and which books are included in document returned. It also includes each book’s Goodreads ID, title, author, and a link to the cover image, as well as some publication and ratings information.
+
+Some books will show up on the Goodreads website but not through the API if the book is an Amazon-only edition. This is relatively rare however, so unless you’re interested in getting information about Kindle books specifically, you probably won’t need to worry about this.
+
+Here is what the results through the first book returned would be for a search of Station Eleven:
+
+<GoodreadsResponse>
+<Request>
+<authentication>true</authentication>
+<key>
+<![CDATA[ Vun0e9cG4YDB1oBqcle9Ew ]]>
+</key>
+<method>
+<![CDATA[ search_search ]]>
+</method>
+</Request>
+<search>
+<query>
+<![CDATA[ Station Eleven ]]>
+</query>
+<results-start>1</results-start>
+<results-end>3</results-end>
+<total-results>3</total-results>
+<source>Goodreads</source>
+<query-time-seconds>0.10</query-time-seconds>
+<results>
+<work>
+<id type="integer">28098716</id>
+<books_count type="integer">25</books_count>
+<ratings_count type="integer">57275</ratings_count>
+<text_reviews_count type="integer">8741</text_reviews_count>
+<original_publication_year type="integer">2014</original_publication_year>
+<original_publication_month type="integer">1</original_publication_month>
+<original_publication_day type="integer">1</original_publication_day>
+<average_rating>4.01</average_rating>
+<best_book type="Book">
+<id type="integer">20170404</id>
+<title>Station Eleven</title>
+<author>
+<id type="integer">2786093</id>
+<name>Emily St. John Mandel</name>
+</author>
+<image_url>
+https://d.gr-assets.com/books/1415583784m/20170404.jpg
+</image_url>
+<small_image_url>
+https://d.gr-assets.com/books/1415583784s/20170404.jpg
+</small_image_url>
+</best_book>
+</work>
+
+...
+
+How to Connect and What Parameters Are Required?
+
+At it’s bare minimum, this search method requires only the developer key and the search term, “key” and “q” as key/value pairs. The search term can be either a title, author, or ISBN, because the default search includes all fields. The parameters are passed by the GET http method, so it’s relatively easy to search for books. You can use either the base url https://www.goodreads.com/search/index.xml or https://www.goodreads.com/search.xml. 
+
+While you will probably be interested in calling the method a different way and parsing the returned XML document, that is beyond the scope of this example. However, to merely search for Station Eleven and print the xml document, you only need two lines of PHP:
+
+<?php
+
+header("Content-type: application/xml");
+print file_get_contents("https://www.goodreads.com/search.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=Station+Eleven");
+
+?>
+
+As you can see, the key used is Vun0e9cG4YDB1oBqcle9Ew. However, you would need to substitute your own.
+
+How to narrow which type of are returned?
+
+There are two optional parameters: one for search field and and one for which page to return. You can narrow the search field to either title or author, by simply appending the search field and value. If you were looking for a book with the title “Egg”, your URL would change to something like this:
+
+https://www.goodreads.com/search.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=Egg&search[field]=title. 
+
+To change the search to one for an author, “Egg”, the search field would need to be changed to “author”:
+
+https://www.goodreads.com/search.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=Egg&search[field]=title.
+
+Please note that while the Goodreads API page here at https://www.goodreads.com/api/index#search.books indicates that you can use the search field to search by genre, this is not completely functional. The following search for books in the “romance” genre, of which there are certainly thousands, will return no results:
+
+https://www.goodreads.com/search/index.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=romance&search[field]=genre 
+
+While this method recognizes genre as a parameter, it does not do the same for ISBN. This method ignores invalid parameters, and narrowing the search field by “genre” has the same effect as narrowing it by “egg”. However, because ISBNs are unlikely to be confused for author names or book titles, you can essentially ignore this. 
+
+How to Fetch a Given Page of Results?
+
+Narrowing the search to a page of results is relatively easy. This search method returns the first page of results from Goodreads by default. However, the “page” parameter allows you to request additional pages by entering an integer value of which page of results you would like to recieve. For example, to receive the second page of results for the query J K Rowling, you would use the following:
+
+https://www.goodreads.com/search.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=J+K+Rowling&page=2 
+
+By default, each page returns twenty results.
+
+Paginate an author's books
+
+What Does the author.books Method Do?
+
+You are able to get a paginated list of the books an author has listed on Goodreads, ordered by popularity. You can see the official documentation for this API method here at https://www.goodreads.com/api/index#author.books. 
+What is Returned?
+
+This method returns an XML document of the search results. By default, the the first thirty book results are shown. These books include those for which the author is a secondary author as well as books that most users would expect to see. The results will include information about how many books fit the search and which books are shown. For each book returned as part of the search, the book ID, title, book cover URL, a link to the book’s Goodreads page, some links and information about the author, and rating information for the book will be given. There are many fields that may be filled but sometimes are not, including those for the book description, ISBN, and publishing information. 
+
+Please note that most but not all books that would be shown on the Goodreads website will be returned through the API, as Amazon’s terms limit the use of their information. However, as Goodreads pulls metadata about most of their listed books from other sources, this will only affect Kindle-edition books. Given that Amazon semi-recently purchased Goodreads, this may change in the next few years, but it’s still something to keep in mind until then.
+
+Here is what the results through the first book returned would be for a search of Stephen King:
+
+<GoodreadsResponse>
+<Request>
+<authentication>true</authentication>
+<key>
+<![CDATA[ Vun0e9cG4YDB1oBqcle9Ew ]]>
+</key>
+<method>
+<![CDATA[ author_list ]]>
+</method>
+</Request>
+<author>
+<id>3389</id>
+<name>Stephen King</name>
+<link>
+<![CDATA[
+https://www.goodreads.com/author/show/3389.Stephen_King
+]]>
+</link>
+<books start="1" end="30" total="1159">
+<book>
+<id type="integer">11588</id>
+<isbn>0450040186</isbn>
+<isbn13>9780450040184</isbn13>
+<text_reviews_count type="integer">8141</text_reviews_count>
+<title>The Shining (The Shining #1)</title>
+<image_url>
+https://d.gr-assets.com/books/1353277730m/11588.jpg
+</image_url>
+<small_image_url>
+https://d.gr-assets.com/books/1353277730s/11588.jpg
+</small_image_url>
+<large_image_url/>
+<link>
+https://www.goodreads.com/book/show/11588.The_Shining
+</link>
+<num_pages>512</num_pages>
+<format>Paperback</format>
+<edition_information/>
+<publisher>Hodder & Stoughton</publisher>
+<publication_day>1</publication_day>
+<publication_year>1980</publication_year>
+<publication_month>7</publication_month>
+<average_rating>4.11</average_rating>
+<ratings_count>610267</ratings_count>
+<description>
+Danny was only five years old but in the words of old Mr Halloran he was a 'shiner', aglow with psychic voltage. When his father became caretaker of the Overlook Hotel his visions grew frighteningly out of control. <br><br>As winter closed in and blizzards cut them off, the hotel seemed to develop a life of its own. It was meant to be empty, but who was the lady in Room 217, and who were the masked guests going up and down in the elevator? And why did the hedges shaped like animals seem so alive? <br><br>Somewhere, somehow there was an evil force in the hotel - and that too had begun to shine...
+</description>
+<authors>
+<author>
+<id>3389</id>
+<name>Stephen King</name>
+<role/>
+<image_url>
+<![CDATA[
+https://d.gr-assets.com/authors/1362814142p5/3389.jpg
+]]>
+</image_url>
+<small_image_url>
+<![CDATA[
+https://d.gr-assets.com/authors/1362814142p2/3389.jpg
+]]>
+</small_image_url>
+<link>
+<![CDATA[
+https://www.goodreads.com/author/show/3389.Stephen_King
+]]>
+</link>
+<average_rating>3.97</average_rating>
+<ratings_count>7446372</ratings_count>
+<text_reviews_count>232386</text_reviews_count>
+</author>
+</authors>
+<published>1980</published>
+</book>
+
+...
+
+How to Connect and What Parameters Are Required?
+
+At it’s bare minimum, this search method requires only the developer key and the author ID, “key” and “id” as key/value pairs. 
+
+There are several ways to find the author ID. It is returned through several of the Goodreads API methods, including search.books. Alternatively, you can find an author’s Goodreads ID by going to the author’s page on Goodreads and examining the URL. The author’s Goodreads ID is the number before the author’s name. For example, you can easily examine the URL of Stephen King’s Goodreads author page, https://www.goodreads.com/author/show/3389.Stephen_King, to find his Goodreads ID of 3389.
+
+The parameters are passed by the GET http method. You will probably be interested in parsing the returned XML document, that is beyond the scope of this example. However, to merely search for Stephen King and print the xml document, you only need two lines of PHP code:
+
+<?php
+
+header("Content-type: application/xml");
+print file_get_contents("https://www.goodreads.com/author/list.xml?key=Vun0e9cG4YDB1oBqcle9Ew&id=3389");
+
+?>
+
+The base URL is  https://www.goodreads.com/author/list.xml. As you can see, my key is Vun0e9cG4YDB1oBqcle9Ew, but you would need to use your own. Likewise, you would likely want to substitute a different author’s ID for Stephen King’s, which is 3389.
+How to Paginate the Results?
+
+By default, the first thirty book results are returned, so if you only want to see page one of results then you can ignore this. However, you can include an additional parameter, “page”, to receive the results on that page. For example, to see the eighth page of Stephen King books, &page= 8 would merely need to be appended to the url used in the previous example to become the following: 
+
+https://www.goodreads.com/author/list.xml?key=Vun0e9cG4YDB1oBqcle9Ew&id=3389&page=8
+
+The returned document will list the books start, end, and total, if you are interested in knowing which and how many books out of the total are included on any page of Goodreads results returned.
+Get Reviews for a Book Given a Title
+
+What Does the book.review_counts method Do?
+
+Want to know how popular a book is? You can get a limited review statistics for a given list of up to 1000 ISBNs. You can see the official documentation for this API method here at https://www.goodreads.com/api/index#book.review_counts. 
+What is Returned?
+
+This is one of the few Goodreads API methods that returns JSON, which makes it much easier to parse than the XML usually returned but which makes it rather out of place in the whole set Goodreads API methods, especially as this is the sole method that returns only JSON rather than either JSON or XML or XML alone.
+
+There is little information returned from this method, merely a brief set of statistics about the reviews for a given ISBN rather than any actual reviews.The book.review_counts method does return the book’s Goodreads ID, both the ISBN 10 and ISBN 13, information about how many people have reviewed both the version with the given ISBN and how many people have reviewed all versions of that book, and, of course, the average rating. 
+
+If the queried ISBNs start with 9781594137150, representing Team of Rivals, the returned JSON looks like:
+
+{"books":[{"id":18604267,"isbn":"1594137153","isbn13":"9781594137150","ratings_count":1,"reviews_count":3,"text_reviews_count":1,"work_ratings_count":70449,"work_reviews_count":160881,"work_text_reviews_count":4843,"average_rating":"4.33"},
+
+...
+
+It should be noted that only about half of the review and rating information provided is for the given ISBN. Any of the terms above with the prefix “work_” are for all editions of that book, not just the version with the given ISBN.
+
+If no ISBNs are given, “No ISBNs specified.” is returned. If Goodreads doesn’t have the ISBNs given on on record, either “No books match those ISBNs.” will be output, or the results will ignore the unrecognized ISBNs and print results for ISBNs Goodreads does recognize that were included as arguments for this method.
+
+How to Connect and What Parameters Are Required?
+
+The key/value pairs the “key” and ISBN array parameters are passed by GET. While you will probably be interested in calling the method a different way and parsing the returned JSON, that is beyond the scope of this example. 
+
+However, to search for is ISBNs 9781743532324, 9781594137150, 9781442025189, and 0307886263 and to print the returned JSON, you only need one line of PHP code:
+
+<?php
+
+print file_get_contents("https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns=9781743532324,9781594137150,9781442025189,0307886263");
+
+?>
+
+Do be sure to substitute your own key for Vun0e9cG4YDB1oBqcle9Ew, which is used above. 
+
+You can submit either ISBN 10 or ISBN 13 numbers and can mix them.
+
+ISBNs should be passed in as a string of ISBNs separated by commas without any spaces for the key “isbn”. It should be noted that while the official documentation from Goodreads indicates that values may be passed into an “isbns[]” array either in this method or one by one, this is not completely true. You may add ISBNs to the array by using “isbn[]” and the book’s ISBN as key/value pairings. However, pairing a string of ISBNs separated by commas to “isbn[]” returns an error message. Essentially, the following are equivalent and usable:
+
+https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns=9781743532324,9781594137150,9781442025189,0307886263
+
+https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns[]=9781743532324&isbns[]=9781594137150&isbns[]=9781442025189&isbns[]=0307886263 
+
+However, this variation is not accepted:
+
+https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns[]=9781743532324,9781594137150,9781442025189,0307886263
+
+What About the Format and Callback Parameters?
+
+While the official documentation indicates that there is a “format” parameter. This API method does not recognize it as a real parameter, and is unnecessary anyway. While some of the Goodreads API methods allow you to choose between JSON and XML, this method only returns JSON.
+
+The method does allow you to include “callback” as an optional parameter, allowing you to specify a function to wrap the JSON response.
+
+Goodreads offers some example code at https://www.goodreads.com/api/index#book.show_by_isbn. You can use your own function to wrap the JSON response, to make it more attractive or manageable. To use the callback parameter, simply use your function name for the callback parameter, for example, appending &callback=myCallback, if your function was called myCallback, to the end of your query. To confirm that a callback works for this method, you can try the following javascript, derived from Goodread’s example:
+
+<script type="text/javascript">
+            function myCallback(result) {
+              alert("Hey, this example works!");
+            }
+			var scriptTag = document.createElement("script");
+            scriptTag.src = "https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns=9781743532324,9781594137150,9781442025189,0307886263&callback=myCallback";
+            document.getElementsByTagName("head")[0].appendChild(scriptTag);
+            </script>';
+
+Again, however, you would need to replace Vun0e9cG4YDB1oBqcle9Ew with your own developer key. 
+Get a User's Review for a Given Book
+
+What Does the review.show_by_user_and_book Method Do?
+
+On Goodreads, users can review and rate books on a scale of one to five stars inclusive. This method allows you to get an XML document of a given user’s rating and review of any given book Goodreads has on file. Alternatively, if the user hasn’t entered a review for the queried edition, Goodreads can return their review for another edition of the same book. You can see the official documentation for this method at https://www.goodreads.com/api/index#review.show_by_user_and_book. 
+
+What is Returned?
+
+The xml document returned will include some information about the user, including their name, id, location, png of their icon, and the url of their page on Goodreads. Their review, including any text, the rating, when they read it, and shelves it is on will be returned, among other review information. Their comment page for their specific comment will also be returned. A great deal of information about the book is available, including a description, publication information, and author information.
+
+Here is what the results through the first book returned would be for a search of Station Eleven:
+
+<GoodreadsResponse>
+<Request>
+<authentication>true</authentication>
+<key>
+<![CDATA[ Vun0e9cG4YDB1oBqcle9Ew ]]>
+</key>
+<method>
+<![CDATA[ review_show_by_user_and_book ]]>
+</method>
+</Request>
+<review>
+<id>522225209</id>
+<user>
+<id>16990309</id>
+<name>Laurenmiller7</name>
+<location>Seattle, WA</location>
+<link>
+<![CDATA[
+https://www.goodreads.com/user/show/16990309-laurenmiller7
+]]>
+</link>
+<image_url>
+<![CDATA[
+https://s.gr-assets.com/assets/nophoto/user/u_111x148-9394ebedbb3c6c218f64be9549657029.png
+]]>
+</image_url>
+<small_image_url>
+<![CDATA[
+https://s.gr-assets.com/assets/nophoto/user/u_50x66-632230dc9882b4352d753eedf9396530.png
+]]>
+</small_image_url>
+</user>
+<book>...</book>
+<rating>5</rating>
+<votes>0</votes>
+<spoiler_flag>false</spoiler_flag>
+<spoilers_state>none</spoilers_state>
+<shelves>
+<shelf name="read" exclusive="true"/>
+</shelves>
+<recommended_for/>
+<recommended_by/>
+<started_at/>
+<read_at/>
+<date_added>Wed Jan 30 21:10:15 -0800 2013</date_added>
+<date_updated>Wed Jan 30 21:10:15 -0800 2013</date_updated>
+<read_count/>
+<body></body>
+<comments_count>0</comments_count>
+<url>
+<![CDATA[ https://www.goodreads.com/review/show/522225209 ]]>
+</url>
+<link>
+<![CDATA[ https://www.goodreads.com/review/show/522225209 ]]>
+</link>
+<owned>0</owned>
+</review>
+</GoodreadsResponse>
+
+How to Connect and What Parameters Are Required?
+Here’s the document returned for the search for laurenmiller7’s review for Kingdom Come:
+
+The parameters are passed by the GET with the base URL  https://www.goodreads.com/review/show_by_user_and_book.xml. Only three parameters are required: your developer key, the Goodreads ID of the user whose review you want to look up, and the Goodreads ID of the book that you want to see the review of. These are “key”, “user_id”, and “book_id respectively.
+
+Several of Goodreads API methods return books’ Goodreads IDs. If you know the ISBN of the book, this method at https://www.goodreads.com/api/index#book.isbn_to_id is the easiest. Alternatively, you can go to the book’s page on the Goodreads website and examine the URL. The book’s ID is the string of digits preceding the book title. For example, url for Kingdom Come is https://www.goodreads.com/book/show/16992.Kingdom_Come, so the book’s ID is 16992. 
+
+Getting a user’s ID is just as easy. If you’re willing to use OAuth, https://www.goodreads.com/api/index#auth.user is the easiest method for retrieving a user’s ID, but does require the user to login. Alternatively, if you’re only interested in seeing a specific user’s reviews, their Goodreads ID will be the number preceding their username in their Goodreads user page URL. For example, the ID for laurenmiller7 , whose page is https://www.goodreads.com/user/show/16990309-laurenmiller7, is 16990309.
+
+While you’ll probably be interested in calling the method a different way and parsing the returned XML document, that’s beyond the scope of this example. To only request laurenmiller7’s review for Kingdom Come, however, you only need the following PHP:
+
+<?php
+
+header("Content-type: application/xml");
+print file_get_contents("https://www.goodreads.com/review/show_by_user_and_book.xml?key=Vun0e9cG4YDB1oBqcle9Ew&user_id=16990309&book_id=16992");
+
+?>
+
+As always, you would need to substitute  the key, user_id, and book_id parameters with your own values.
+
+How to return a review for another book in the same work?
+
+By default, this method doesn’t return reviews for other books, even other versions of the same book. The “include_review_on_work” parameter can be set so that Goodreads can return their review for another edition of the same book if the user hasn’t provided a review for the one used in the search. By default, this boolean parameter is set to false. Setting this to true provides the user’s review for what is essentially the same book, even though it has a different Goodreads ID.
+
+For example, searching for a version of Kingdom Come not rated or reviewed while the “include_review_on_work” is set to true returned the document shows above. Performing almost the same search with “include_review_on_work” set to false or omitted as a parameter returns the following XML:
+
+<GoodreadsResponse>
+<Request>
+<authentication>true</authentication>
+<key>
+<![CDATA[ Vun0e9cG4YDB1oBqcle9Ew ]]>
+</key>
+<method>
+<![CDATA[ review_show_by_user_and_book ]]>
+</method>
+</Request>
+review not found for user
+</GoodreadsResponse>
+
+The parameter is boolean and can be set by appending &include_review_on_work=true to the search url.
+
+
+
+
+
+
