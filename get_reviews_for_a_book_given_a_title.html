@@ -62,9 +62,18 @@
 	  <br>
 	  <p>While the official documentation indicates that there is a "format" parameter. This API method does not recognize it as a real parameter, and is unnecessary anyway. While some of the Goodreads API methods allow you to choose between JSON and XML, this method only returns JSON.</p>
 	  <p>The method does allow you to include "callback" as an optional parameter, allowing you to specify a function to wrap the JSON response.</p>
-	  <
-	  
-	 
+	  <p>Goodreads offers some example code <a href = https://www.goodreads.com/api/index#book.show_by_isbn>here</a>. You can use your own function to wrap the JSON response, to make it more attractive or manageable. To use the callback parameter, simply use your function name for the callback parameter, for example, appending &callback=myCallback, if your function was called myCallback, to the end of your query. To confirm that a callback works for this method, you can try the following javascript, derived from Goodread’s example:</p>
+	  <code>
+	  	<script type="text/javascript">
+            function myCallback(result) {
+              alert("Hey, this example works!");
+            }
+			var scriptTag = document.createElement("script");
+            scriptTag.src = "https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns=9781743532324,9781594137150,9781442025189,0307886263&callback=myCallback";
+            document.getElementsByTagName("head")[0].appendChild(scriptTag);
+            </script>';
+	  </code>
+	  <p>Again, you would need to replace Vun0e9cG4YDB1oBqcle9Ew with your own developer key. </p>
 	</div>
   </body>
 
