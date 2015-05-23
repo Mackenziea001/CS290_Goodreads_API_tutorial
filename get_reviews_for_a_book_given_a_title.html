@@ -6,7 +6,7 @@
     <title> An Introduction to Using the Goodreads API: Get Reviews for a Book Given a Title </title>
     <link rel = "stylesheet" href = "goodreadsapistyle.css">
 	<style type="text/css">
-	   #sidebar {height: 1480px;}
+	   #sidebar {height: 1770px;}
 	 </style>
   </head>
 
@@ -37,13 +37,13 @@
 	  <p>Want to know how popular a book is? You can get a limited review statistics for a given list of up to 1000 ISBNs. You can see the official documentation for this API method <a href = https://www.goodreads.com/api/index#book.review_counts>here</a>. </p>
 	  <h2>What is Returned</h2>
 	  <p>This is one of the few Goodreads API methods that returns JSON, which makes it much easier to parse than the XML usually returned but which makes it rather out of place in the whole set Goodreads API methods, especially as this is the sole method that returns only JSON rather than either JSON or XML or XML alone.</p>
-	  <p>There is little information returned from this method, merely a brief set of statistics about the reviews for a given ISBN rather than any actual reviews.The book.review_counts method does return the book’s Goodreads ID, both the ISBN 10 and ISBN 13, information about how many people have reviewed both the version with the given ISBN and how many people have reviewed all versions of that book, and, of course, the average rating.</p>
+	  <p>There is little information returned from this method, merely a brief set of statistics about the reviews for a given ISBN rather than any actual reviews.The book.review_counts method does return the book's Goodreads ID, both the ISBN 10 and ISBN 13, information about how many people have reviewed both the version with the given ISBN and how many people have reviewed all versions of that book, and, of course, the average rating.</p>
 	  <p>As an example, if the queried ISBNs start with 9781594137150, representing Team of Rivals, the returned JSON looks like this:</p>
-	  <code>{"books":[{"id":18604267,"isbn":"1594137153","isbn13":"9781594137150","ratings_count":1,"reviews_count":3,"text_reviews_count":1,"work_ratings_count":70449,"work_reviews_count":160881,"work_text_reviews_count":4843,"average_rating":"4.33"},</code>
+	  <code style="word-wrap: break-word;">{"books":[{"id":18604267,"isbn":"1594137153","isbn13":"9781594137150","ratings_count":1,"reviews_count":3,"text_reviews_count":1,"work_ratings_count":70449,"work_reviews_count":160881,"work_text_reviews_count":4843,"average_rating":"4.33"},</code>
 	  <code> ... </code>
 	  <br>
 	  <p>It should be noted that only about half of the review and rating information provided is for the given ISBN. Any of the terms above with the prefix "work_" are for all editions of that book, not just the version with the given ISBN. </p>
-	  <p>If no ISBNs are given, "No ISBNs specified." is returned. If Goodreads doesn’t have the ISBNs given on on record, either "No books match those ISBNs." will be output, or the results will ignore the unrecognized ISBNs and print results for ISBNs Goodreads does recognize that were included as arguments for this method.</p>
+	  <p>If no ISBNs are given, "No ISBNs specified." is returned. If Goodreads doesn't have the ISBNs given on on record, either "No books match those ISBNs." will be output, or the results will ignore the unrecognized ISBNs and print results for ISBNs Goodreads does recognize that were included as arguments for this method.</p>
 	  <h2>How to Connect and What Parameters Are Required</h2>
 	  <p>The key/value pairs the "key" and ISBN array parameters are passed by GET. While you will probably be interested in calling the method a different way and parsing the returned JSON, that is beyond the scope of this example. </p>
 	  <p>However, to search for is ISBNs 9781743532324, 9781594137150, 9781442025189, and 0307886263 and to print the returned JSON, you only need one line of PHP code:</p>
@@ -51,28 +51,25 @@
 	  <br>
 	  <p>Do be sure to substitute your own key for Vun0e9cG4YDB1oBqcle9Ew where used above. </p>
 	  <p>You can submit either ISBN 10 or ISBN 13 numbers and can mix them.</p>
-	  <p>ISBNs should be passed in as a string of ISBNs separated by commas without any spaces for the key “isbn”. It should be noted that while the official documentation from Goodreads indicates that values may be passed into an “isbns[]” array either in this method or one by one, this is not completely true. You may add ISBNs to the array by using “isbn[]” and the book’s ISBN as key/value pairings. However, pairing a string of ISBNs separated by commas to “isbn[]” returns an error message. Essentially, the following are equivalent and usable:</p>
-	  <code>https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns=9781743532324,9781594137150,9781442025189,0307886263</code>
+	  <p>ISBNs should be passed in as a string of ISBNs separated by commas without any spaces for the key "isbn". It should be noted that while the official documentation from Goodreads indicates that values may be passed into an "isbns[]" array either in this method or one by one, this is not completely true. You may add ISBNs to the array by using "isbn[]" and the book's ISBN as key/value pairings. However, pairing a string of ISBNs separated by commas to "isbn[]" returns an error message. Essentially, the following are equivalent and usable:</p>
+	  <code style="word-wrap: break-word;">https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns=9781743532324,9781594137150,9781442025189,0307886263</code>
 	  <br>
 	  <p> ...and...</p>
-	  <code>https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns[]=9781743532324&isbns[]=9781594137150&isbns[]=9781442025189&isbns[]=0307886263</code>
+	  <code style="word-wrap: break-word;">https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns[]=9781743532324&isbns[]=9781594137150&isbns[]=9781442025189&isbns[]=0307886263</code>
 	  <br>
 	  <p>However, this variation is not accepted:</p>
 	  <code>https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns[]=9781743532324,9781594137150,9781442025189,0307886263</code>
 	  <br>
 	  <p>While the official documentation indicates that there is a "format" parameter. This API method does not recognize it as a real parameter, and is unnecessary anyway. While some of the Goodreads API methods allow you to choose between JSON and XML, this method only returns JSON.</p>
 	  <p>The method does allow you to include "callback" as an optional parameter, allowing you to specify a function to wrap the JSON response.</p>
-	  <p>Goodreads offers some example code <a href = https://www.goodreads.com/api/index#book.show_by_isbn>here</a>. You can use your own function to wrap the JSON response, to make it more attractive or manageable. To use the callback parameter, simply use your function name for the callback parameter, for example, appending &callback=myCallback, if your function was called myCallback, to the end of your query. To confirm that a callback works for this method, you can try the following javascript, derived from Goodread’s example:</p>
-	  <code>
-	  	<script type="text/javascript">
-            function myCallback(result) {
-              alert("Hey, this example works!");
-            }
-			var scriptTag = document.createElement("script");
-            scriptTag.src = "https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns=9781743532324,9781594137150,9781442025189,0307886263&callback=myCallback";
-            document.getElementsByTagName("head")[0].appendChild(scriptTag);
-            </script>';
-	  </code>
+	  <p>Goodreads offers some example code <a href = https://www.goodreads.com/api/index#book.show_by_isbn>here</a>. You can use your own function to wrap the JSON response, to make it more attractive or manageable. To use the callback parameter, simply use your function name for the callback parameter, for example, appending &callback=myCallback, if your function was called myCallback, to the end of your query. To confirm that a callback works for this method, you can try the following javascript, derived from Goodread's example:</p>
+	  <textarea rows="9" cols="95" style="border:solid 0px;">
+function myCallback(result) {
+  alert("Hey, this example works!");
+}
+var scriptTag = document.createElement("script");
+scriptTag.src = "https://www.goodreads.com/book/review_counts.json?key=Vun0e9cG4YDB1oBqcle9Ew&isbns=9781743532324,9781594137150,9781442025189,0307886263&callback=myCallback";
+document.getElementsByTagName("head")[0].appendChild(scriptTag);</textarea>
 	  <p>Again, you would need to replace Vun0e9cG4YDB1oBqcle9Ew with your own developer key. </p>
 	</div>
   </body>
