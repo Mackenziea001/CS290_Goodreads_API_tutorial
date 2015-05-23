@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset = "utf-8">
+    <title> An Introduction to Using the Goodreads API: Get a User's Review for a Given Book </title>
+    <link rel = "stylesheet" href = "goodreadsapistyle.css">
+	<style type="text/css">
+	   #sidebar {height: 1800px;}
+	 </style>
+  </head>
+
+  <body>
+	<div id = "sidebar">
+	  <h2> Goodreads API Guide </h2>
+	  <h3> Getting Started </h3>
+	  <a href = guide_introduction.html> Introduction </a> <br>
+	  <a href = getting_a_key.html> Getting A Key </a> <br>
+	  <a href = goodreads_api_methods.html> Goodread's API Methods </a> <br>
+	  <h3> Examples </h3>
+	  <a href = find_books_by_title_author_or_isbn.html> Find Books by Title, Author, or ISBN </a> <br>
+	  <a href = paginate_an_authors_books.html> Paginate an Author's Books </a> <br>
+	  <a href = get_reviews_for_a_book_given_a_title.html> Get Reviews for a Book Given a Title </a> <br>
+	  <a href = get_a_users_review_for_a_given_book.html> Get a User's Review for a Given Book </a> <br>
+	  <br>
+	</div>
+	
+	<div id = "header"> 
+		<h1>An Introduction to Using the Goodreads API </h1>
+		<p><small> by Lauren Miller </small></p>
+		
+	</div>
+	
+	<div id = "content">
+	  <h1> Get a User's Review for a Given Book </h1>
+	  <h2> What the review.show_by_user_and_book Method Does </h2>
+	  <p>On Goodreads, users can review and rate books on a scale of one to five stars inclusive. This method allows you to get an XML document of a given user's rating and review of any given book Goodreads has on file. Alternatively, if the user hasn't entered a review for the queried edition, Goodreads can return their review for another edition of the same book. You can see the official documentation for this method <a href =https://www.goodreads.com/api/index#review.show_by_user_and_book>here</a>. </p>
+	  <h2>What is Returned</h2>
+	  <p>The xml document returned will include some information about the user, including their name, id, location, png of their icon, and the url of their page on Goodreads. Their review, including any text, the rating, when they read it, and shelves it is on will be returned, among other review information. Their comment page for their specific comment will also be returned. A great deal of information about the book is available, including a description, publication information, and author information.</p>
+	  <p>Here's the document returned for the search for laurenmiller7's review for Kingdom Come:</p>
+	  <br>
+	  <textarea rows="20" cols="95">
+	    <GoodreadsResponse>
+      <Request>
+      <authentication>true</authentication>
+      <key>
+      <![CDATA[ Vun0e9cG4YDB1oBqcle9Ew ]]>
+      </key>
+      <method>
+      <![CDATA[ review_show_by_user_and_book ]]>
+      </method>
+      </Request>
+      <review>
+      <id>522225209</id>
+      <user>
+      <id>16990309</id>
+      <name>Laurenmiller7</name>
+      <location>Seattle, WA</location>
+      <link>
+      <![CDATA[
+      https://www.goodreads.com/user/show/16990309-laurenmiller7
+      ]]>
+      </link>
+      <image_url>
+      <![CDATA[
+      https://s.gr-assets.com/assets/nophoto/user/u_111x148-9394ebedbb3c6c218f64be9549657029.png
+      ]]>
+      </image_url>
+      <small_image_url>
+      <![CDATA[
+      https://s.gr-assets.com/assets/nophoto/user/u_50x66-632230dc9882b4352d753eedf9396530.png
+      ]]>
+      </small_image_url>
+      </user>
+      <book>...</book>
+      <rating>5</rating>
+      <votes>0</votes>
+      <spoiler_flag>false</spoiler_flag>
+      <spoilers_state>none</spoilers_state>
+      <shelves>
+      <shelf name="read" exclusive="true"/>
+      </shelves>
+      <recommended_for/>
+      <recommended_by/>
+      <started_at/>
+      <read_at/>
+      <date_added>Wed Jan 30 21:10:15 -0800 2013</date_added>
+      <date_updated>Wed Jan 30 21:10:15 -0800 2013</date_updated>
+      <read_count/>
+      <body></body>
+      <comments_count>0</comments_count>
+      <url>
+      <![CDATA[ https://www.goodreads.com/review/show/522225209 ]]>
+      </url>
+      <link>
+      <![CDATA[ https://www.goodreads.com/review/show/522225209 ]]>
+      </link>
+      <owned>0</owned>
+      </review>
+      </GoodreadsResponse>
+	  </textarea>
+	  <h2>How to Connect and What Parameters Are Required?</h2>
+	  <p>The parameters are passed by the GET with the base URL  https://www.goodreads.com/review/show_by_user_and_book.xml. Only three parameters are required: your developer key, the Goodreads ID of the user whose review you want to look up, and the Goodreads ID of the book that you want to see the review of. These are "key", "user_id", and "book_id" respectively.</p>
+	  <img src="goodreads_book_id.png" style="width:682px;height:351px">
+	  <p>Several of Goodreads API methods return books' Goodreads IDs. If you know the ISBN of the book, <a href = https://www.goodreads.com/api/index#book.isbn_to_id> this method</a> is the easiest. Alternatively, you can go to the book's page on the Goodreads website and examine the URL. The book's ID is the string of digits preceding the book title. For example, url for Kingdom Come is https://www.goodreads.com/book/show/16992.Kingdom_Come, so the book's ID is 16992.</p>
+	  <img src="goodreads_user_id.png" style="width:682px;height:351px">
+	  <p>Getting a user's ID is just as easy. If you're willing to use OAuth, <a href = https://www.goodreads.com/api/index#auth.user>this</a> is the easiest method for retrieving a user's ID, but does require the user to login. Alternatively, if you're only interested in seeing a specific user's reviews, their Goodreads ID will be the number preceding their username in their Goodreads user page URL. For example, the ID for laurenmiller7 , whose page is https://www.goodreads.com/user/show/16990309-laurenmiller7, is 16990309.</p>
+	  <p>While you'll probably be interested in calling the method a different way and parsing the returned XML document, that's beyond the scope of this example. To only request laurenmiller7's review for Kingdom Come, however, you only need the following PHP: </p>
+	  <code>header("Content-type: application/xml");</code>
+    <code style="word-wrap: break-word;">print file_get_contents("https://www.goodreads.com/review/show_by_user_and_book.xml?key=Vun0e9cG4YDB1oBqcle9Ew&user_id=16990309&book_id=16992"); </code>
+    <br>
+    <p>As always, you would need to substitute  the key, user_id, and book_id parameters with your own values.</p>
+    <h2>How to Return a Review For Another Book in the Same Work</h2>
+    <p>By default, this method doesn't return reviews for other books, even other versions of the same book. The "include_review_on_work" parameter can be set so that Goodreads can return their review for another edition of the same book if the user hasn't provided a review for the one used in the search. By default, this boolean parameter is set to false. Setting this to true provides the user's review for what is essentially the same book, even though it has a different Goodreads ID.</p>
+    <p>For example, searching for a version of Kingdom Come not rated or reviewed while the "include_review_on_work" is set to true returned the document shows above. Performing almost the same search with "include_review_on_work" set to false or omitted as a parameter returns the following XML:</p>
+    <br>
+    <textarea rows="13" cols="95">
+      <GoodreadsResponse>
+      <Request>
+      <authentication>true</authentication>
+      <key>
+      <![CDATA[ Vun0e9cG4YDB1oBqcle9Ew ]]>
+      </key>
+      <method>
+      <![CDATA[ review_show_by_user_and_book ]]>
+      </method>
+      </Request>
+      review not found for user
+      </GoodreadsResponse>
+    </textarea>
+    <p>The parameter is boolean and can be set by appending &include_review_on_work=true to the search url. For example,  the search url for the previous query would be as follows:</p>
+    <code style="word-wrap: break-word;">https://www.goodreads.com/review/show_by_user_and_book.xml?key=Vun0e9cG4YDB1oBqcle9Ew&user_id=16990309&book_id=16992&include_review_on_work=true</code>
+	</div>
+  </body>
+
+</html>
+
 
