@@ -6,7 +6,7 @@
     <title> An Introduction to Using the Goodreads API: Paginate an Author's Books </title>
     <link rel = "stylesheet" href = "goodreadsapistyle.css">
 	<style type="text/css">
-	   #sidebar {height: 2130px;}
+	   #sidebar {height: 1480px;}
 	 </style>
   </head>
 
@@ -36,8 +36,98 @@
 	  <h2> What Does the author.books Method Do </h2>
 	  <p> You are able to get a paginated list of the books an author has listed on Goodreads, ordered by popularity. You can see the official documentation for this API method <a href = https://www.goodreads.com/api/index#author.books>here</a>.
 	  <h2> What is Returned </h2>
-	  
-	  <textarea rows="45" cols="95"></textarea>
+	  <p> This method returns an XML document of the search results. By default, the the first thirty book results are shown. These books include those for which the author is a secondary author as well as books that most users would expect to see. The results will include information about how many books fit the search and which books are shown. For each book returned as part of the search, the book ID, title, book cover URL, a link to the book's Goodreads page, some links and information about the author, and rating information for the book will be given. There are many fields that may be filled but sometimes are not, including those for the book description, ISBN, and publishing information. </p>
+	  <p> Please note that most but not all books that would be shown on the Goodreads website will be returned through the API, as Amazon's terms limit the use of their information. However, as Goodreads pulls metadata about most of their listed books from other sources, this will only affect Kindle-edition books. Given that Amazon semi-recently purchased Goodreads, this may change in the next few years, but it's still something to keep in mind until then. </p>
+	  <p>Here is what the results through the first book returned would be for a search of Stephen King:</p>
+	  <br>
+	  <textarea rows="20" cols="95">
+	  	<GoodreadsResponse>
+		<Request>
+		<authentication>true</authentication>
+		<key>
+		<![CDATA[ Vun0e9cG4YDB1oBqcle9Ew ]]>
+		</key>
+		<method>
+		<![CDATA[ author_list ]]>
+		</method>
+		</Request>
+		<author>
+		<id>3389</id>
+		<name>Stephen King</name>
+		<link>
+		<![CDATA[
+		https://www.goodreads.com/author/show/3389.Stephen_King
+		]]>
+		</link>
+		<books start="1" end="30" total="1159">
+		<book>
+		<id type="integer">11588</id>
+		<isbn>0450040186</isbn>
+		<isbn13>9780450040184</isbn13>
+		<text_reviews_count type="integer">8141</text_reviews_count>
+		<title>The Shining (The Shining #1)</title>
+		<image_url>
+		https://d.gr-assets.com/books/1353277730m/11588.jpg
+		</image_url>
+		<small_image_url>
+		https://d.gr-assets.com/books/1353277730s/11588.jpg
+		</small_image_url>
+		<large_image_url/>
+		<link>
+		https://www.goodreads.com/book/show/11588.The_Shining
+		</link>
+		<num_pages>512</num_pages>
+		<format>Paperback</format>
+		<edition_information/>
+		<publisher>Hodder & Stoughton</publisher>
+		<publication_day>1</publication_day>
+		<publication_year>1980</publication_year>
+		<publication_month>7</publication_month>
+		<average_rating>4.11</average_rating>
+		<ratings_count>610267</ratings_count>
+		<description>
+		Danny was only five years old but in the words of old Mr Halloran he was a 'shiner', aglow with psychic voltage. When his father became caretaker of the Overlook Hotel his visions grew frighteningly out of control. <br><br>As winter closed in and blizzards cut them off, the hotel seemed to develop a life of its own. It was meant to be empty, but who was the lady in Room 217, and who were the masked guests going up and down in the elevator? And why did the hedges shaped like animals seem so alive? <br><br>Somewhere, somehow there was an evil force in the hotel - and that too had begun to shine...
+		</description>
+		<authors>
+		<author>
+		<id>3389</id>
+		<name>Stephen King</name>
+		<role/>
+		<image_url>
+		<![CDATA[
+		https://d.gr-assets.com/authors/1362814142p5/3389.jpg
+		]]>
+		</image_url>
+		<small_image_url>
+		<![CDATA[
+		https://d.gr-assets.com/authors/1362814142p2/3389.jpg
+		]]>
+		</small_image_url>
+		<link>
+		<![CDATA[
+		https://www.goodreads.com/author/show/3389.Stephen_King
+		]]>
+		</link>
+		<average_rating>3.97</average_rating>
+		<ratings_count>7446372</ratings_count>
+		<text_reviews_count>232386</text_reviews_count>
+		</author>
+		</authors>
+		<published>1980</published>
+		</book>
+	</textarea>
+	<h2> How to Connect and What Parameters Are Required </h2>
+	<p>At it's bare minimum, this search method requires only the developer key and the author ID, "key" and "id" as key/value pairs.</p>
+	<p>There are several ways to find the author ID. It is returned through several of the Goodreads API methods, including search.books. Alternatively, you can find an author's Goodreads ID by going to the author's page on Goodreads and examining the URL. The author's Goodreads ID is the number before the author's name. For example, you can easily examine the URL of Stephen King's Goodreads author page, <a href = https://www.goodreads.com/author/show/3389.Stephen_King>https://www.goodreads.com/author/show/3389.Stephen_King</a>, to find his Goodreads ID of 3389.</p>
+	<p>The parameters are passed by the GET http method. You will probably be interested in parsing the returned XML document, that is beyond the scope of this example. However, to merely search for Stephen King and print the xml document, you only need two lines of PHP code:</p>
+	<code> header("Content-type: application/xml");</code><br>
+	<code>print file_get_contents("https://www.goodreads.com/author/list.xml?key=Vun0e9cG4YDB1oBqcle9Ew&id=3389");</code>
+	<p>The base URL is  https://www.goodreads.com/author/list.xml. As you can see, my key is Vun0e9cG4YDB1oBqcle9Ew, but you would need to use your own. Likewise, you would likely want to substitute a different author's ID for Stephen King's.</p>
+	<h2> How to Paginate the Results </h2>
+	<p>By default, the first thirty book results are returned, so if you only want to see page one of results then you can ignore this. However, you can include an additional parameter, "page", to receive the results on that page. For example, to see the eighth page of Stephen King books, &page= 8 would merely need to be appended to the url used in the previous example to become the following: </p>
+	<code>https://www.goodreads.com/author/list.xml?key=Vun0e9cG4YDB1oBqcle9Ew&id=3389&page=8</code>
+	<br>
+	<p>The returned document will list the books start, end, and total, if you are interested in knowing which and how many books out of the total are included on any page of Goodreads results returned.</p>
 	
 	</div>
   </body>
