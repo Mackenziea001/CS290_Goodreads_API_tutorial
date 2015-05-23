@@ -6,7 +6,7 @@
     <title> An Introduction to Using the Goodreads API: Find Books by Title, Author, or ISBN </title>
     <link rel = "stylesheet" href = "goodreadsapistyle.css">
 	<style type="text/css">
-	   #sidebar {height: 900px;}
+	   #sidebar {height: 2130px;}
 	 </style>
   </head>
 
@@ -33,9 +33,84 @@
 	
 	<div id = "content">
 	  <h1> Find Books by Title, Author, or ISBN </h1>
-	  <h2> What Does the search.books Method Do? </h2>
-	  <p>
-	  
+	  <h2> What the search.books Method Does </h2>
+	  <p>Goodreads allows you to rather broadly search for books by title, author, or ISBN and returns XML of the of information about books matching the query sorted by popularity. You can see the offficial documentation <a href = https://www.goodreads.com/api/index#search.books> here </a>.
+	  <h2> What is Returned </h2>
+	  <p> The XML returned will include useful albeit limited information about the search, including how many books satisfy the query and which books are included in document returned. It also includes each book's Goodreads ID, title, author, and a link to the cover image, as well as some publication and ratings information.</p>
+	  <p> Some books will show up on the Goodreads website but not through the API if the book is an Amazon-only edition. This is relatively rare however, so unless you're interested in getting information about Kindle books specifically, you probably won't need to worry about this. </p>
+	  <p>Here is what the results through the first book returned would be for a search of Station Eleven: </p>
+	  <br>
+	  <textarea rows="45" cols="95">
+	<GoodreadsResponse>
+	<Request>
+	<authentication>true</authentication>
+	<key>
+	<![CDATA[ Vun0e9cG4YDB1oBqcle9Ew ]]>
+	</key>
+	<method>
+	<![CDATA[ search_search ]]>
+	</method>
+	</Request>
+	<search>
+	<query>
+	<![CDATA[ Station Eleven ]]>
+	</query>
+	<results-start>1</results-start>
+	<results-end>3</results-end>
+	<total-results>3</total-results>
+	<source>Goodreads</source>
+	<query-time-seconds>0.10</query-time-seconds>
+	<results>
+	<work>
+	<id type="integer">28098716</id>
+	<books_count type="integer">25</books_count>
+	<ratings_count type="integer">57275</ratings_count>
+	<text_reviews_count type="integer">8741</text_reviews_count>
+	<original_publication_year type="integer">2014</original_publication_year>
+	<original_publication_month type="integer">1</original_publication_month>
+	<original_publication_day type="integer">1</original_publication_day>
+	<average_rating>4.01</average_rating>
+	<best_book type="Book">
+	<id type="integer">20170404</id>
+	<title>Station Eleven</title>
+	<author>
+	<id type="integer">2786093</id>
+	<name>Emily St. John Mandel</name>
+	</author>
+	<image_url>
+	https://d.gr-assets.com/books/1415583784m/20170404.jpg
+	</image_url>
+	<small_image_url>
+	https://d.gr-assets.com/books/1415583784s/20170404.jpg
+	</small_image_url>
+	</best_book>
+	</work>
+	</textarea wrap = "soft">
+	<h2> How to Connect and What Parameters Are Required </h2>
+	<p> At it's bare minimum, this search method requires only the developer key and the search term, "key" and "q" as key/value pairs. The search term can be either a title, author, or ISBN, because the default search includes all fields. The parameters are passed by the GET http method, so it's relatively easy to search for books. You can use either the base url https://www.goodreads.com/search/index.xml or https://www.goodreads.com/search.xml. </p>
+	<p>While you will probably be interested in calling the method a different way and parsing the returned XML document, that is beyond the scope of this example. However, to merely search for Station Eleven and print the xml document, you only need two lines of PHP:</p>
+	<code> header("Content-type: application/xml"); </code><br>
+	<code> print file_get_contents("https://www.goodreads.com/search.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=Station+Eleven");</code>
+	<br>
+	<p> As you can see, the key used is Vun0e9cG4YDB1oBqcle9Ew. However, you would need to substitute your own. </p>
+	<h2> How to Narrow Which Type of Results Are Returned </h2>
+	<p>There are two optional parameters: one for search field and and one for which page to return. You can narrow the search field to either title or author, by simply appending the search field and value. If you were looking for a book with the title "Egg", your URL would change to something like this:</p>
+	<code> https://www.goodreads.com/search.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=Egg&search[field]=title</code>
+	<br>
+	<p> To change the search to one for an author, "Egg", the search field would need to be changed to "author":
+	</p>
+	<code> https://www.goodreads.com/search.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=Egg&search[field]=author. </code>
+	<br>
+	<p> Please note that while <a href = https://www.goodreads.com/api/index#search.books> the Goodreads API page </a> indicates that you can use the search field to search by genre, this is not completely functional. The following search for books in the "romance" genre, of which there are certainly thousands, will return no results:</p>
+	<code> https://www.goodreads.com/search/index.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=romance&search[field]=genre </code>
+	<br>
+	<p> While this method recognizes genre as a parameter, it does not do the same for ISBN. This method ignores invalid parameters, and narrowing the search field by "genre" has the same effect as narrowing it by "egg". However, because ISBNs are unlikely to be confused for author names or book titles, you can essentially ignore this. </p>
+	<h2> How to Fetch a Given Page of Results </h2>
+	<p> Narrowing the search to a page of results is relatively easy. This search method returns the first page of results from Goodreads by default. However, the "page" parameter allows you to request additional pages by entering an integer value of which page of results you would like to receive. For example, to receive the second page of results for the query J K Rowling, you would use the following: </p>
+	<code> https://www.goodreads.com/search.xml?key=Vun0e9cG4YDB1oBqcle9Ew&q=J+K+Rowling&page=2 </code>
+	<br>
+	<p>By default, each page returns twenty results.</p>
+	
 	</div>
   </body>
 
